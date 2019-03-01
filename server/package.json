@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/jsdom": "^12.2.2",
+    "axios": "^0.18.0",
+    "jsdom": "^13.2.0"
   }
 }
