@@ -18,7 +18,7 @@ import { ListCourse } from './types'
   12 'Notes' 
 */
 
-const dom = new JSDOM(readFileSync('./QueryResult.aspx'))
+const dom = new JSDOM(readFileSync('./QueryResult.aspx', { encoding: 'utf-8' }))
 const table = dom.window.document.querySelector('table#my_dg')
 const [ titles, ...rows ] = Array.from(table.querySelectorAll('tr')).map(row => 
     Array.from(row.querySelectorAll('td'))
@@ -30,13 +30,13 @@ let totalCount = rows.length
 export const listCourses = rows.map(row => {
     const id = row[1].textContent
     console.log(`${id}: Scanning course (${++currentCount}/${totalCount})`)
-    const title = row[2].querySelector('a').innerHTML
+    const title = row[2].querySelector('a').textContent
     const infoUrl = ('https://qcourse.ntust.edu.tw/querycourse/EngCourseQuery/' + row[2].querySelector('a').getAttribute('href')).trim()
-    const credits = Number(row[4].innerHTML)
+    const credits = Number(row[4].textContent)
     const outlineUrl = row[5].querySelector('a').getAttribute('href').trim()
-    const time = row[7].innerHTML
-    const location = row[8].innerHTML
-    const notes = row[12].innerHTML
+    const time = row[7].textContent
+    const location = row[8].textContent
+    const notes = row[12].textContent
     const course: ListCourse = { id, credits, infoUrl, location, notes, outlineUrl, time, title }
     return course
 }).filter(course => course.id !== '')

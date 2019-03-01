@@ -51,8 +51,8 @@ const extractCourseInfo = (course: Course): CourseExtract => ({
             return course
         })
     )
-    writeFileSync('Courses.json', JSON.stringify(courses))
+    writeFileSync('Courses.json', JSON.stringify(courses), { encoding: 'utf-8' })
     console.log('All courses fetched. Stored to Courses.json')
 
-    writeFileSync('CourseExtracts.json', JSON.stringify(courses.map(extractCourseInfo)))
+    writeFileSync('CourseExtracts.json', JSON.stringify(courses.map(extractCourseInfo)), { encoding: 'utf-8' })
 })()
