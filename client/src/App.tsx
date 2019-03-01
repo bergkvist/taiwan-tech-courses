@@ -8,19 +8,24 @@ import ReactJsonView from 'react-json-view'
 
 const columns = [{
   Header: 'Course ID',
-  accessor: 'id' 
+  accessor: 'id',
+  minResizeWidth: 10
 }, {
   Header: 'Title',
   accessor: 'title',
+  minResizeWidth: 10
 }, {
   Header: 'Time',
-  accessor: 'time'
+  accessor: 'time',
+  minResizeWidth: 10
 }, {
   Header: 'Location',
-  accessor: 'location'
+  accessor: 'location',
+  minResizeWidth: 10
 }, {
   Header: 'Credits',
-  accessor: 'credits'
+  accessor: 'credits',
+  minResizeWidth: 10
 }]
 
 const Default = (row: any) => <ReactJsonView src={row.original} />
