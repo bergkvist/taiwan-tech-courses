@@ -24,7 +24,8 @@ const Td = styled.td`
   padding: 7px;
   border: 1px solid lightgray;
   font-size: 14px;
-  word-wrap:break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 `
 
 const MoreInfoRow: React.SFC<MoreInfoRow> = props => <Fragment>
