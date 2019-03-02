@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
 
-export interface MoreInfoRow { title: string, value: Element | string | number }
+export interface MoreInfoRow { title: string, value: string | number, isUrl?: boolean }
 
 const Table = styled.table`
   width: 98%;
@@ -30,14 +30,18 @@ const Td = styled.td`
 const MoreInfoRow: React.SFC<MoreInfoRow> = props => <Fragment>
   <Tr>
     <Td style={{ width: '20%', textAlign: 'right' }}>{props.title}</Td>
-    <Td style={{ width: '80%' }}>{props.value}</Td>
+    {(props.isUrl === true)
+      ? <Td style={{ width: '80%' }}><a href={String(props.value)}>{props.value}</a></Td>
+      : <Td style={{ width: '80%' }}>{props.value}</Td>
+    }
+    
   </Tr>
 </Fragment>
 
 export const MoreInfoTable: React.SFC<{ rows: Array<MoreInfoRow> }> = props => <Fragment>
   <Table><tbody>
       {props.rows.map(row => 
-        <MoreInfoRow title={row.title} value={row.value} />
+        <MoreInfoRow key={row.title} title={row.title} value={row.value} isUrl={row.isUrl} />
       )}
   </tbody></Table>
 </Fragment>
