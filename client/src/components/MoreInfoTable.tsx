@@ -4,12 +4,10 @@ import styled from 'styled-components'
 export interface MoreInfoRow { title: string, value: string | number, isUrl?: boolean }
 
 const Table = styled.table`
-  width: 98%;
+  width: 100%;
   table-layout: fixed;
-  border: 1px solid lightgray;
+  border: 4px solid lightgray;
   border-collapse: collapse;
-  margin-right: 1%;
-  margin-left: 1%;
 `
 
 const Tr = styled.tr`
