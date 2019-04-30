@@ -1,66 +1,64 @@
-import React, { Component, ChangeEvent } from 'react'
-import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import logo from './logo.svg'
 import './App.css'
+import React, { Component, Fragment } from 'react'
+import ReactTable, { RowRenderProps } from 'react-table'
 import courses from './CourseExtracts.json'
-import ReactJsonView from 'react-json-view'
+import { CourseExtract } from './types'
+import { MoreInfoTable } from './components/MoreInfoTable'
+import styled from 'styled-components'
 
-const columns = [{
-  Header: 'Course ID',
-  accessor: 'id' 
-}, {
-  Header: 'Title',
-  accessor: 'title',
-}, {
-  Header: 'Time',
-  accessor: 'time'
-}, {
-  Header: 'Location',
-  accessor: 'location'
-}, {
-  Header: 'Credits',
-  accessor: 'credits'
-}]
+const SearchBox = styled.input`
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 16px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 0px;
+  margin: 0px;
+  border: 2px solid lightgray;
+`
 
-const Default = (row: any) => <ReactJsonView src={row.original} />
+const MoreInfo = (row: RowRenderProps) => {
+  const course: CourseExtract = row.original
+  return <MoreInfoTable rows={[
+    { title: 'ID',                  value: course.id },
+    { title: 'Title',               value: course.title },
+    { title: 'Location',            value: course.location },
+    { title: 'Time',                value: course.time },
+    { title: 'Outline Url',         value: course.url.outline, isUrl: true },
+    { title: 'Info Url',            value: course.url.info,    isUrl: true },
+    { title: 'Course Page',         value: course.url.http,    isUrl: true },
+    { title: '# of NTU students',   value: course.studentCountNTU },
+    { title: '# of NTUST students', value: course.studentCountNTUST },
+    { title: 'Total # of students', value: course.studentCountTotal },
+    { title: 'Department',          value: course.department },
+    { title: 'Faculty',             value: course.faculty },
+    { title: 'Description',         value: course.description },
+    { title: 'Term',                value: course.term },
+    { title: 'Semester',            value: course.semester },
+    { title: 'Core',                value: course.core },
+    { title: 'Object',              value: course.object },
+    { title: 'Content',             value: course.content },
+    { title: 'Textbook',            value: course.textbook },
+    { title: 'Refbook',             value: course.refbook },
+    { title: 'Note',                value: course.note },
+    { title: 'Grading',             value: course.grading },
+    { title: 'Remark',              value: course.remark },
+  ]} />
+}
 
-const Table = (row: any) => <table><tbody>
-  <tr><td>id</td><td>{row.original.id}</td></tr>
-  <tr><td>title</td><td>{row.original.title}</td></tr>
-  <tr><td>location</td><td>{row.original.location}</td></tr>
-  <tr><td>time</td><td>{row.original.time}</td></tr>
-  <tr><td>url</td><td>
-    <table><tbody>
-      <tr><td>outline</td><td><a href={row.original.url.outline}>{row.original.url.outline}</a></td></tr>
-      <tr><td>info</td><td><a href={row.original.url.info}>{row.original.url.info}</a></td></tr>
-      <tr><td>course site</td><td><a href={row.original.url.http}>{row.original.url.http}</a></td></tr>
-    </tbody></table>
-  </td></tr>
-  <tr><td>registered students</td><td>
-    <table><tbody>
-      <tr><td>NTUST</td><td>{row.original.studentCountNTUST}</td></tr>
-      <tr><td>NTU</td><td>{row.original.studentCountNTU}</td></tr>
-      <tr><td>total</td><td>{row.original.studentCountTotal}</td></tr>
-    </tbody></table>
-  </td></tr>
-  <tr><td>department</td><td>{row.original.department}</td></tr>
-  <tr><td>faculty</td><td>{row.original.faculty}</td></tr>
-  <tr><td>description</td><td>{row.original.description}</td></tr>
-  <tr><td>term</td><td>{row.original.term}</td></tr>
-  <tr><td>semester</td><td>{row.original.semester}</td></tr>
-  <tr><td>core</td><td>{row.original.core}</td></tr>
-  <tr><td>object</td><td>{row.original.object}</td></tr>
-  <tr><td>content</td><td>{row.original.content}</td></tr>
-  <tr><td>textbook</td><td>{row.original.textbook}</td></tr>
-  <tr><td>refbook</td><td>{row.original.refbook}</td></tr>
-  <tr><td>note</td><td>{row.original.note}</td></tr>
-  <tr><td>grading</td><td>{row.original.grading}</td></tr>
-  <tr><td>remark</td><td>{row.original.remark}</td></tr>
-</tbody></table>
+const columns = [
+  { Header: 'Course ID', accessor: 'id',  minResizeWidth: 10 }, 
+  { Header: 'Title', accessor: 'title', minResizeWidth: 10 }, 
+  { Header: 'Time', accessor: 'time', minResizeWidth: 10 }, 
+  { Header: 'Location', accessor: 'location', minResizeWidth: 10 }, 
+  { Header: 'Credits', accessor: 'credits', minResizeWidth: 10 }
+]
 
-const searchFilter = (searchText: string) => (course: any) => {
-  return [
+const containsSearchText = (searchText: string) => (course: CourseExtract) => {
+  const searchableFields: Array<String> = [
     course.description,
     course.core,
     course.object,
@@ -69,31 +67,35 @@ const searchFilter = (searchText: string) => (course: any) => {
     course.refbook,
     course.note,
     course.grading,
-    course.remark
+    course.remark,
   ]
-    .map(_ => _ ? String(_).includes(searchText) : false)
-    .reduce((prev, curr) => prev || curr)
+
+  return searchableFields
+    .filter(field => field !== '')
+    .map(field => field.toLowerCase())
+    .filter(field => field.includes(searchText.toLowerCase()))
+    .length > 0
 }
 
 class App extends Component {
   public readonly state = {
     searchText: ''
   }
-  onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchText: e.target.value })
-  }
   render() {
-    return <div>
-      <input 
+    const filteredCourses = (this.state.searchText)
+      ? courses.filter(containsSearchText(this.state.searchText))
+      : courses
+    return <Fragment>
+      <SearchBox 
         id="global-search" 
         placeholder="Search in descriptions..." 
-        onChange={this.onSearchChange}
+        onChange={e => this.setState({ searchText: e.target.value })}
       />
       <ReactTable 
-        data={(this.state.searchText) ? courses.filter(searchFilter(this.state.searchText)) : courses} 
+        data={filteredCourses} 
         columns={columns} 
         className="-striped -highlight" 
-        SubComponent={Table}
+        SubComponent={MoreInfo}
         filterable 
         resizable
         defaultFilterMethod={(filter, row, column) => {
@@ -101,7 +103,7 @@ class App extends Component {
           return row[id] !== undefined ? String(row[id]).toLowerCase().includes(filter.value.toLowerCase()) : true
         }}
       />
-    </div>
+    </Fragment>
   }
 }
 
